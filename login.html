@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Validation</title>
+    <link rel="stylesheet" href="login2.css">
+    <link rel="stylesheeth" href="login3.js">
+</head>
+<body>
+    <div class="form-container animate__animated animate__fadeInUp">
+        <form id="form" class="form-section">
+            <h2>Student</h2>
+            <div class="form-input">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" placeholder="Enter Username">
+                <small class="error-message" id="username-error"></small>
+            </div>
+            <div class="form-input">
+                <label for="email">Gender</label>
+                <input type="email" id="email" name="email" placeholder="Enter Email">
+                <small class="error-message" id="email-error"></small>
+            </div>
+            <div class="form-input">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Enter Password">
+                <small class="error-message" id="password-error"></small>
+            </div>
+            <div class="form-input">
+                <label for="password2">Confirm Password</label>
+                <input type="password" id="password2" name="password2" placeholder="Confirm Password">
+                <small class="error-message" id="password2-error"></small>
+            </div>
+            <div class="form-submit">
+                <button type="submit">Submit</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        const form = document.getElementById('form');
+        const usernameInput = document.getElementById('username');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const confirmPasswordInput = document.getElementById('password2');
+        
+        function showError(input, message) {
+            const errorMessage = input.parentElement.querySelector('.error-message');
+            errorMessage.innerText = message;
+            input.classList.add('error');
+        }
+        
+        function showSuccess(input) {
+            input.classList.remove('error');
+        }
+        
+        function checkRequired(inputArray) {
+            inputArray.forEach(input => {
+                if (input.value.trim() === '') {
+                    showError(input, `${getFieldName(input)} is required`);
+                } else {
+                    showSuccess(input);
+                }
+            });
+        }
+        
+        function checkLength(input, min, max) {
+            if (input.value.length < min) {
+                showError(input, `${getFieldName(input)} must be at least ${min} characters`);
+            } else if (input.value.length > max) {
+                showError(input, `${getFieldName(input)} must be less than ${max} characters`);
+            } else {
+                showSuccess(input);
+            }
+        }
+        
+        function checkEmail(input) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!re.test(input.value)) {
+                showError(input, 'Email is not valid');
+            } else {
+                showSuccess(input);
+            }
+        }
+        
+        function checkPasswordMatch(input1, input2) {
+            if (input1.value !== input2.value) {
+                showError(input2, 'Passwords do not match');
+            } else {
+                showSuccess(input2);
+            }
+        }
+
+        function getFieldName(input) {
+            return input.name.charAt(0).toUpperCase() + input.name.slice(1);
+        }
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            checkRequired([usernameInput, emailInput, passwordInput, confirmPasswordInput]);
+            checkLength(usernameInput, 3, 15);
+            checkLength(passwordInput, 6, 25);
+            checkEmail(emailInput);
+            checkPasswordMatch(passwordInput, confirmPasswordInput);
+        });
+    </script>
+</body>
+</html>
